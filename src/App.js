@@ -1,23 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import { useState } from "react";
+
+// Blocks
+import BookingBlock from "./HandleBookingBlock";
 
 function App() {
+  const [booking, setBooking] = useState("");
+
+  const handleBooking = (event, newBooking) => {
+    setBooking(newBooking);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <h1>🍻Tietgen Bar Committee🍻</h1>
+        <h2> What would you like to book?</h2>
+        <ToggleButtonGroup
+          color="primary"
+          exclusive
+          onChange={handleBooking}
+          value={booking}
         >
-          Learn React
-        </a>
-      </header>
+          <ToggleButton value="bars"> Bars</ToggleButton>
+          <ToggleButton value="soundboks" disabled>
+            Soundboks 🔊
+          </ToggleButton>
+          <ToggleButton value="other"> Other </ToggleButton>
+        </ToggleButtonGroup>
+        <div style={{ marginTop: "24px" }}>
+          {/* Her skal næste booking del være afhængig af hvad man vælger */}
+          <BookingBlock selectedBooking={booking} />
+        </div>
+      </div>
     </div>
   );
 }
