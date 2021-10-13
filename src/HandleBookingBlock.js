@@ -1,5 +1,9 @@
 import React, { memo, useState } from "react";
 import TextField from "@mui/material/TextField";
+import DateAdapter from "@material-ui/lab/AdapterDateFns";
+import AdapterDateFns from "@material-ui/lab/AdapterDateFns";
+import LocalizationProvider from "@material-ui/lab/LocalizationProvider";
+import StaticDatePicker from "@material-ui/lab/StaticDatePicker";
 
 export default memo(function HandleBookingBlock({ selectedBooking }) {
   const [stdBars, setStdBars] = useState(0);
@@ -12,6 +16,7 @@ export default memo(function HandleBookingBlock({ selectedBooking }) {
     setMdBar(event.target.value);
   };
 
+  //
   function supplementalInfoSwitch() {
     switch (selectedBooking) {
       case "bars":
@@ -53,9 +58,41 @@ export default memo(function HandleBookingBlock({ selectedBooking }) {
           </div>
         );
       case "other":
-        return <p>other y</p>;
+        return (
+          <div>
+            <p>other y</p>
+          </div>
+        );
+      default:
+        return;
     }
   }
 
-  return <div>{supplementalInfoSwitch()}</div>;
+  // Date functionality
+  const [date, newDate] = useState("");
+  const setDate = (chosenDate) => {
+    newDate(chosenDate);
+  };
+  function showBookingCalendar() {
+    if (stdBars != 0 || mdBar != 0) {
+      return (
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <StaticDatePicker
+            displayStaticWrapperAs="desktop"
+            value={date}
+            onChange={(chosenDate) => {
+              setDate(chosenDate);
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
+      );
+    }
+  }
+
+  return (
+    <div>
+      {supplementalInfoSwitch()} {showBookingCalendar()}
+    </div>
+  );
 });
