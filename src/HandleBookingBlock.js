@@ -7,6 +7,8 @@ import AdapterDateFns from "@material-ui/lab/AdapterDateFns";
 import LocalizationProvider from "@material-ui/lab/LocalizationProvider";
 import StaticDatePicker from "@material-ui/lab/StaticDatePicker";
 import isSameDay from "date-fns/isSameDay";
+import addDays from "date-fns/addDays";
+import isAfter from "date-fns/isAfter";
 import PickersDay, {
   PickersDayProps,
   pickersDayClasses,
@@ -65,12 +67,20 @@ export default memo(function HandleBookingBlock({ selectedBooking }) {
           </div>
         );
       case "other":
+        if (stdBars !== 0 || mdBar !== 0) {
+          setStdBars(0);
+          setMdBar(0);
+        }
         return (
           <div>
             <p>other y</p>
           </div>
         );
       default:
+        if (stdBars !== 0 || mdBar !== 0) {
+          setStdBars(0);
+          setMdBar(0);
+        }
         return;
     }
   }
@@ -120,6 +130,7 @@ export default memo(function HandleBookingBlock({ selectedBooking }) {
         return true;
       }
     }
+
     return false;
   }
 
