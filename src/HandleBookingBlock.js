@@ -1,9 +1,16 @@
 import React, { memo, useState } from "react";
 import TextField from "@mui/material/TextField";
+
+// Date modules
 import DateAdapter from "@material-ui/lab/AdapterDateFns";
 import AdapterDateFns from "@material-ui/lab/AdapterDateFns";
 import LocalizationProvider from "@material-ui/lab/LocalizationProvider";
 import StaticDatePicker from "@material-ui/lab/StaticDatePicker";
+import isSameDay from "date-fns/isSameDay";
+import PickersDay, {
+  PickersDayProps,
+  pickersDayClasses,
+} from "@material-ui/lab/PickersDay";
 
 export default memo(function HandleBookingBlock({ selectedBooking }) {
   const [stdBars, setStdBars] = useState(0);
@@ -16,7 +23,7 @@ export default memo(function HandleBookingBlock({ selectedBooking }) {
     setMdBar(event.target.value);
   };
 
-  //
+  // Show additional info for
   function supplementalInfoSwitch() {
     switch (selectedBooking) {
       case "bars":
@@ -69,17 +76,67 @@ export default memo(function HandleBookingBlock({ selectedBooking }) {
   }
 
   // Date functionality
+  type HighlightedDay = {
+    date: Date,
+    styles: CSSProperties,
+  };
+  const styleBookedDay = {
+    backgroundColor: "red",
+    color: "white",
+  };
+
+  const highlightedDays: HighlightedDay[] = [
+    {
+      date: new Date(2021, 9, 14),
+      styles: styleBookedDay,
+    },
+  ];
+
+  const renderWeekPickerDay = (
+    date: Date,
+    selectedDates: Array<Date | null>,
+    pickersDayProps: PickersDayProps<Date>
+  ) => {
+    const matchedStyles = highlightedDays.reduce((a, v) => {
+      return isSameDay(date, v.date) ? v.styles : a;
+    }, {});
+
+    return (
+      <PickersDay
+        {...pickersDayProps}
+        sx={{
+          ...matchedStyles,
+          [`&&.${pickersDayClasses.selected}`]: {
+            backgroundColor: "green",
+          },
+        }}
+      />
+    );
+  };
+
+  function checkIfBookedDay(thisDate) {
+    for (const elementDate of highlightedDays) {
+      if (isSameDay(thisDate, elementDate.date)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   const [date, newDate] = useState("");
   const setDate = (chosenDate) => {
     newDate(chosenDate);
   };
   function showBookingCalendar() {
-    if (stdBars != 0 || mdBar != 0) {
+    if (stdBars !== 0 || mdBar !== 0) {
       return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <StaticDatePicker
+            disablePast
             displayStaticWrapperAs="desktop"
             value={date}
+            shouldDisableDate={(date) => checkIfBookedDay(date)}
+            renderDay={renderWeekPickerDay}
             onChange={(chosenDate) => {
               setDate(chosenDate);
             }}
