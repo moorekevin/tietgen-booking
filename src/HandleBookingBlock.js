@@ -1,5 +1,6 @@
 import React, { memo, useState } from "react";
 import TextField from "@mui/material/TextField";
+import ToggleButton from "@mui/material/ToggleButton";
 
 // Date modules
 import DateAdapter from "@material-ui/lab/AdapterDateFns";
@@ -54,7 +55,7 @@ export default memo(function HandleBookingBlock({ selectedBooking }) {
             </TextField>
             <TextField
               style={{ width: "25vw", marginTop: "20px" }}
-              label="Medium bar w/fadølsanlæg"
+              label="Medium bar w/draft beer functionality (fadølsanlæg)"
               value={mdBar}
               select
               helperText="Info: Only for special events"
@@ -95,9 +96,14 @@ export default memo(function HandleBookingBlock({ selectedBooking }) {
     color: "white",
   };
 
+  // Booked dates list
   const highlightedDays: HighlightedDay[] = [
     {
-      date: new Date(2021, 9, 14),
+      date: new Date(2022, 9, 14),
+      styles: styleBookedDay,
+    },
+    {
+      date: new Date(2022, 9, 15),
       styles: styleBookedDay,
     },
   ];
@@ -150,6 +156,7 @@ export default memo(function HandleBookingBlock({ selectedBooking }) {
             renderDay={renderWeekPickerDay}
             onChange={(chosenDate) => {
               setDate(chosenDate);
+              bookDate(chosenDate);
             }}
             renderInput={(params) => <TextField {...params} />}
           />
@@ -157,10 +164,17 @@ export default memo(function HandleBookingBlock({ selectedBooking }) {
       );
     }
   }
+  const [bookDate, setMdBar] = useState(0);
+  const bookDate = (chosenDate) => {
+    while (typeof chosenDate !== "undefined") {
+      console.log(chosenDate);
+      return <ToggleButton value="Book!"> Book</ToggleButton>;
+    }
+  };
 
   return (
     <div>
-      {supplementalInfoSwitch()} {showBookingCalendar()}
+      {supplementalInfoSwitch()} {showBookingCalendar()} {bookDate()}
     </div>
   );
 });
